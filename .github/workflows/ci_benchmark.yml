@@ -125,3 +125,33 @@ jobs:
         with:
           name: asv-benchmark-results-${{ runner.os }}
           path: benchmarks.log
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: asv-benchmark-results-${{ runner.os }}
+
+      - name: Read artifact
+        id: artifact
+        run: echo "::set-output name=content::$(cat asv-benchmark-results-${{ runner.os }}/benchmarks.log)"
+
+      - name: Create comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue_number = context.payload.pull_request.number;
+            const body = `
+            <details>
+              <summary>Benchmark results</summary>
+
+              \`\`\`
+              ${{ steps.artifact.outputs.content }}
+              \`\`\`
+            </details>
+            `;
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number,
+              body: body
+            });
