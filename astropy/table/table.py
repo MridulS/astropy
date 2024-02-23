@@ -4,7 +4,7 @@ import sys
 import types
 import warnings
 import weakref
-from collections import OrderedDict, defaultdict
+from collections import defaultdict
 from collections.abc import Mapping
 from copy import deepcopy
 
@@ -219,11 +219,11 @@ def _get_names_from_list_of_dict(rows):
 
 
 # Note to future maintainers: when transitioning this to dict
-# be sure to change the OrderedDict ref(s) in Row and in __len__().
+# be sure to change the dict ref(s) in Row and in __len__().
 
 
-class TableColumns(OrderedDict):
-    """OrderedDict subclass for a set of columns.
+class TableColumns(dict):
+    """dict subclass for a set of columns.
 
     This class enhances item access to provide convenient access to columns
     by name or index, including slice access.  It also handles renaming
@@ -264,7 +264,7 @@ class TableColumns(OrderedDict):
           tc[1:3] # <TableColumns names=('b', 'c')>
         """
         if isinstance(item, str):
-            return OrderedDict.__getitem__(self, item)
+            return dict.__getitem__(self, item)
         elif isinstance(item, (int, np.integer)):
             return list(self.values())[item]
         elif (
@@ -394,7 +394,7 @@ class TableAttribute(MetaAttribute):
       >>> t.identifier
       10
       >>> t.meta
-      OrderedDict([('__attributes__', {'identifier': 10})])
+      dict([('__attributes__', {'identifier': 10})])
     """
 
 
@@ -936,10 +936,10 @@ class Table:
                     setattr(col.info, attr, value)
 
     def __getstate__(self):
-        columns = OrderedDict(
-            (key, col if isinstance(col, BaseColumn) else col_copy(col))
+        columns = {
+            key: col if isinstance(col, BaseColumn) else col_copy(col)
             for key, col in self.columns.items()
-        )
+        }
         return (columns, self.meta)
 
     def __setstate__(self, state):
@@ -2254,7 +2254,7 @@ class Table:
         # available yet or the column might be gone now, in which case
         # try again in the except block.
         try:
-            return len(OrderedDict.__getitem__(self.columns, self._first_colname))
+            return len(dict.__getitem__(self.columns, self._first_colname))
         except (AttributeError, KeyError):
             if len(self.columns) == 0:
                 return 0
@@ -2453,7 +2453,8 @@ class Table:
             # Move the other cols to the right of the new one
             move_names = self.colnames[index:-1]
             for move_name in move_names:
-                self.columns.move_to_end(move_name, last=True)
+                # self.columns.move_to_end(move_name, last=True)
+                self.columns[move_name] = self.columns.pop(move_name)
 
     def add_columns(
         self, cols, indexes=None, names=None, copy=True, rename_duplicate=False
@@ -4039,7 +4040,7 @@ class Table:
             )
             # fmt: on
 
-        out = OrderedDict()
+        out = {}
 
         for name, column in tbl.columns.items():
             if getattr(column.dtype, "isnative", True):
@@ -4145,7 +4146,7 @@ class Table:
           2002-01-01T00:00:00.000     300.0     4.0
 
         """
-        out = OrderedDict()
+        out = {}
 
         names = list(dataframe.columns)
         columns = [dataframe[name] for name in names]

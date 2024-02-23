@@ -3297,9 +3297,9 @@ def test_values_and_types():
         (7, 8, 6),
     ]
     t = table.Table(rows=dat, names=("a", "b", "c"))
-    assert isinstance(t.values(), type(OrderedDict().values()))
-    assert isinstance(t.columns.values(), type(OrderedDict().values()))
-    assert isinstance(t.columns.keys(), type(OrderedDict().keys()))
+    assert isinstance(t.values(), type({}.values()))
+    assert isinstance(t.columns.values(), type({}.values()))
+    assert isinstance(t.columns.keys(), type({}.keys()))
     for i in t.values():
         assert isinstance(i, table.column.Column)
 
@@ -3312,7 +3312,7 @@ def test_items():
     ]
     t = table.Table(rows=dat, names=("a", "b", "c"))
 
-    assert isinstance(t.items(), type(OrderedDict({}).items()))
+    assert isinstance(t.items(), type({}.items()))
 
     for i in list(t.items()):
         assert isinstance(i, tuple)

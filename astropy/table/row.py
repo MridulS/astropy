@@ -1,7 +1,6 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 
 import collections
-from collections import OrderedDict
 from operator import index as operator_index
 
 import numpy as np
@@ -49,7 +48,7 @@ class Row:
             # Try the most common use case of accessing a single column in the Row.
             # Bypass the TableColumns __getitem__ since that does more testing
             # and allows a list of tuple or str, which is not the right thing here.
-            out = OrderedDict.__getitem__(self._table.columns, item)[self._index]
+            out = dict.__getitem__(self._table.columns, item)[self._index]
         except (KeyError, TypeError):
             if self._table._is_list_or_tuple_of_str(item):
                 cols = [self._table[name] for name in item]
