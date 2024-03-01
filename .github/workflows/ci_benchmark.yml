@@ -3,7 +3,7 @@
 name: Benchmark
 
 on:
-  pull_request:
+  pull_reques_target:
     # types: [labeled, synchronize]
 
 # permissions:
@@ -133,7 +133,7 @@ jobs:
 
       - name: Read artifact
         id: artifact
-        run: echo "::set-output name=content::$(cat asv-benchmark-results-${{ runner.os }}/benchmarks.log)"
+        run: echo "content=$(cat asv-benchmark-results-${{ runner.os }}/benchmarks.log)" >> $GITHUB_OUTPUT
 
       - name: Create comment
         uses: actions/github-script@v7
