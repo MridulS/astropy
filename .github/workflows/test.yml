@@ -12,7 +12,7 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     name: Python 3.12
-    if: (github.repository == 'astropy/astropy' && (github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'Extra CI')))
+    if: (github.repository == 'mriduls/astropy' && (github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'Extra CI')))
     steps:
       - name: Test
         shell: bash
